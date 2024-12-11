@@ -12,7 +12,7 @@ type IMovieServices interface{
 	CreateMovie(models.Movie) error
 	UpdateMovieById(movie models.Movie, id string) error
 	GetMostViewedMovie() (movie models.Movie,err error)
-	GetMostViewedGenre() (genre string, err error)
+	GetMostViewedGenre() (genre string, viewCount int, err error)
 }
 
 type MovieServices struct {
@@ -71,8 +71,13 @@ func (ms *MovieServices) GetMostViewedMovie() (models.Movie,error) {
 	return movie,nil
 } 
 
-func (ms *MovieServices) GetMostViewedGenre() (string,error){
+func (ms *MovieServices) GetMostViewedGenre() (string,int,error){
 
+	genre,viewCount,err := ms.MovieCore.GetMostViewedGenre()
 
-	return "",nil
+	if err != nil {
+		return "",0,err
+	}
+
+	return genre, viewCount, nil
 }

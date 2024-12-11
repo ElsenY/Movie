@@ -12,6 +12,7 @@ type IMovieCore interface {
 	UpdateMovieById(movie models.Movie, id string) error
 	GetMovieById(id string) (movie models.Movie,err error)
 	GetOneMovieSortedBy(sortedByParams []string, sortDir string) (movie models.Movie,err error)
+	GetMostViewedGenre()(genre string,viewCount int, err error)
 }
 
 type MovieCore struct {
@@ -98,4 +99,17 @@ func (mc *MovieCore) GetOneMovieSortedBy(sortedBy []string, sortDir string) (mod
 		Vote: vote,
 		ViewCount: viewcount,
 	},nil
+}
+
+func (mc *MovieCore) GetMostViewedGenre() (string,int,error) {
+
+	var genre string
+	var viewCount int
+    err := mc.db.QueryRow(queries.GET_MOST_VIEWED_GENRE_QUERY).Scan(&genre,&viewCount)
+
+	if err != nil {
+		return "",0,err
+	}
+
+	return genre, viewCount, nil
 }

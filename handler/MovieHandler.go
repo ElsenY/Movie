@@ -17,6 +17,7 @@ type IMovieHandler interface {
 	CreateMovie(c *gin.Context)
 	UpdateMovieById(c *gin.Context)
 	GetMostViewedMovie(c *gin.Context)
+	GetMostViewedGenre(c *gin.Context)
 }
 
 func NewMovieHandler(ms services.IMovieServices) IMovieHandler{
@@ -95,23 +96,17 @@ func (h *MovieHandler) GetMostViewedMovie(c *gin.Context){
 
 func (h *MovieHandler) GetMostViewedGenre(c *gin.Context){
 
-	movie,err := h.MovieServices.GetMostViewedMovie();
+	genre, viewCount, err := h.MovieServices.GetMostViewedGenre();
 
 	if err != nil {
 		c.JSON(http.StatusBadGateway, gin.H{
-			"message": fmt.Sprintf("Failed to get most viewed movie because of : %s",err.Error()),
+			"message": fmt.Sprintf("Failed to get most viewed genre because of : %s",err.Error()),
 		})
 		return
 	}
 
 	c.JSON(http.StatusOK, gin.H{
-        "title": movie.Title,
-		"description": movie.Description,
-		"duration": movie.Duration,
-		"artists": movie.Artists,
-		"genre": movie.Genre,
-		"watchURL": movie.WatchURL,
-		"vote": movie.Vote,
-		"viewCount": movie.ViewCount,
+       "genre" : genre,
+	   "viewCount" : viewCount,
     })
 }
