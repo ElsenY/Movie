@@ -13,6 +13,7 @@ type IMovieCore interface {
 	GetMovieById(id string) (movie models.Movie,err error)
 	GetOneMovieSortedBy(sortedByParams []string, sortDir string) (movie models.Movie,err error)
 	GetMostViewedGenre()(genre string,viewCount int, err error)
+	GetMoviesPaginated(page, perPage int) (movies []models.Movie,err error)
 }
 
 type MovieCore struct {
@@ -112,4 +113,34 @@ func (mc *MovieCore) GetMostViewedGenre() (string,int,error) {
 	}
 
 	return genre, viewCount, nil
+}
+
+func (mc *MovieCore) GetMoviesPaginated(page, perPage int) (movies []models.Movie,err error) {
+
+	query := fmt.Sprintf(queries.GET_ALL_MOVIES_PAGINATION_QUERY,perPage,page,perPage)
+    rows, err := mc.db.Query(query)
+
+	var title,description,duration,artists,genre,watchURL string
+	var vote,viewcount int64
+
+	for rows.Next() {
+		err = rows.Scan(&title, &description, &duration, &artists, &genre, &watchURL, &vote, &viewcount)
+
+		if err != nil {
+			return []models.Movie{}, err
+		}
+
+		movies = append(movies, models.Movie{
+			Title: title,
+			Description: description,
+			Duration: duration,
+			Artists:artists,
+			Genre: genre,
+			WatchURL: watchURL,
+			Vote: vote,
+			ViewCount: viewcount,
+		})
+	}
+
+	return movies, err
 }

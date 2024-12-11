@@ -13,6 +13,7 @@ type IMovieServices interface{
 	UpdateMovieById(movie models.Movie, id string) error
 	GetMostViewedMovie() (movie models.Movie,err error)
 	GetMostViewedGenre() (genre string, viewCount int, err error)
+	GetMoviesPaginated(page,perPage int) (movies []models.Movie,err error)
 }
 
 type MovieServices struct {
@@ -80,4 +81,15 @@ func (ms *MovieServices) GetMostViewedGenre() (string,int,error){
 	}
 
 	return genre, viewCount, nil
+}
+
+func (ms *MovieServices) GetMoviesPaginated(page,perPage int) ([]models.Movie, error) {
+
+	movies,err  := ms.MovieCore.GetMoviesPaginated(page,perPage)
+
+	if err != nil {
+		return []models.Movie{},err
+	}
+
+	return movies,nil
 }

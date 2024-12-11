@@ -5,3 +5,5 @@ const UPDATE_MOVIE_QUERY = `UPDATE movies SET title=$1,description=$2,duration=$
 const GET_MOVIE_BY_ID_QUERY = `SELECT title,description,duration,artists,genre,watchURL,vote,viewcount FROM movies WHERE id = $1`
 const GET_ONE_MOVIE_SORTED_BY_QUERY = "SELECT title,description,duration,artists,genre,watchURL,vote,viewcount from movies ORDER BY %s %s limit 1"
 const GET_MOST_VIEWED_GENRE_QUERY = `select genre, sum(viewcount) as totalView from movies group by genres order by totalview desc limit 1`
+
+const GET_ALL_MOVIES_PAGINATION_QUERY = "SELECT * FROM movies ORDER BY id LIMIT %d OFFSET %d * %d;"

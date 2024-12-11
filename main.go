@@ -27,39 +27,39 @@ func setupRouter(mh handler.IMovieHandler) *gin.Engine {
 		c.String(http.StatusOK, "pong")
 	})
 
-	// Get user value
+	r.GET("movies", mh.GetMoviesPaginated)
 
 	// basic auth for admin route
 	admin := r.Group("/", gin.BasicAuth(gin.Accounts{
-		os.Getenv("ADMIN_USERNAME"):  os.Getenv("ADMIN_PASSWORD"), // user:foo password:bar
+		os.Getenv("ADMIN_USERNAME"): os.Getenv("ADMIN_PASSWORD"), // user:foo password:bar
 	}))
 
-	admin.POST("movie",mh.CreateMovie)
-	admin.PUT("movie/:id",mh.UpdateMovieById)
-	admin.GET("mostviewedmovie",mh.GetMostViewedMovie)
-	admin.GET("mostviewedgenre",mh.GetMostViewedGenre)
+	admin.POST("movie", mh.CreateMovie)
+	admin.PUT("movie/:id", mh.UpdateMovieById)
+	admin.GET("mostviewedmovie", mh.GetMostViewedMovie)
+	admin.GET("mostviewedgenre", mh.GetMostViewedGenre)
 
 	return r
 }
 
-func initDBConn() (*sql.DB,error) {
-	connStr := fmt.Sprintf("user=%s password=%s dbname=%s sslmode=disable",os.Getenv("DB_USER"),os.Getenv("DB_PASSWORD"),os.Getenv("DB_NAME"))
-    db, err := sql.Open("postgres", connStr)
-    if err != nil {
-        return nil,err
-    }
+func initDBConn() (*sql.DB, error) {
+	connStr := fmt.Sprintf("user=%s password=%s dbname=%s sslmode=disable", os.Getenv("DB_USER"), os.Getenv("DB_PASSWORD"), os.Getenv("DB_NAME"))
+	db, err := sql.Open("postgres", connStr)
+	if err != nil {
+		return nil, err
+	}
 
-	return db,nil
+	return db, nil
 }
 
 func main() {
 
 	err := godotenv.Load()
 	if err != nil {
-        log.Fatal("Error loading .env file")
-    }
+		log.Fatal("Error loading .env file")
+	}
 
-	db,err := initDBConn()
+	db, err := initDBConn()
 
 	// manual dependency injection, can use other library like facebookgo/inject for future development
 	movieCore := core.NewMovieCore(db)
