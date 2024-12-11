@@ -6,7 +6,7 @@ type Movie struct {
 	Description string
 	Duration string
 	Artists string
-	Genres string
+	Genre string
 	WatchURL string
 	Vote int64
 	ViewCount int64

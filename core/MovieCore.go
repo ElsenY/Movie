@@ -27,7 +27,7 @@ func NewMovieCore(db *sql.DB) IMovieCore{
 func (mc *MovieCore) CreateMovie(movie models.Movie) error {
 
 	// we put votes & view count to always 0 since it is a new movie
-	_,err := mc.db.Exec(queries.CREATE_MOVIE_QUERY,movie.Title,movie.Description,movie.Duration,movie.Artists,movie.Genres,movie.WatchURL,0,0)
+	_,err := mc.db.Exec(queries.CREATE_MOVIE_QUERY,movie.Title,movie.Description,movie.Duration,movie.Artists,movie.Genre,movie.WatchURL,0,0)
 
 	if err != nil {
 		return fmt.Errorf("error when executing create movie query to db because of %s",err.Error())
@@ -38,7 +38,7 @@ func (mc *MovieCore) CreateMovie(movie models.Movie) error {
 
 func (mc *MovieCore) UpdateMovieById(movie models.Movie, id string) error {
 
-	_,err := mc.db.Exec(queries.UPDATE_MOVIE_QUERY,movie.Title,movie.Description,movie.Duration,movie.Artists,movie.Genres,movie.WatchURL,movie.Vote,movie.ViewCount, id)
+	_,err := mc.db.Exec(queries.UPDATE_MOVIE_QUERY,movie.Title,movie.Description,movie.Duration,movie.Artists,movie.Genre,movie.WatchURL,movie.Vote,movie.ViewCount, id)
 
 	if err != nil {
 		return fmt.Errorf("error when executing update movie query to db because of %s",err.Error())
@@ -49,10 +49,10 @@ func (mc *MovieCore) UpdateMovieById(movie models.Movie, id string) error {
 
 func (mc *MovieCore) GetMovieById(id string) (models.Movie,error){
 
-	var title,description,duration,artists,genres,watchURL string
+	var title,description,duration,artists,genre,watchURL string
 	var vote,viewcount int64
 
-    err := mc.db.QueryRow(queries.GET_MOVIE_BY_ID_QUERY, id).Scan(&title, &description, &duration, &artists, &genres, &watchURL, &vote, &viewcount)
+    err := mc.db.QueryRow(queries.GET_MOVIE_BY_ID_QUERY, id).Scan(&title, &description, &duration, &artists, &genre, &watchURL, &vote, &viewcount)
 
     if err != nil {
        return models.Movie{},err
@@ -63,7 +63,7 @@ func (mc *MovieCore) GetMovieById(id string) (models.Movie,error){
 		Description: description,
 		Duration: duration,
 		Artists:artists,
-		Genres: genres,
+		Genre: genre,
 		WatchURL: watchURL,
 		Vote: vote,
 		ViewCount: viewcount,
@@ -72,7 +72,7 @@ func (mc *MovieCore) GetMovieById(id string) (models.Movie,error){
 
 func (mc *MovieCore) GetOneMovieSortedBy(sortedBy []string, sortDir string) (models.Movie,error) {
 
-	var title,description,duration,artists,genres,watchURL string
+	var title,description,duration,artists,genre,watchURL string
 	var vote,viewcount int64
 
 	var unifiedSortedByParams string 
@@ -82,7 +82,7 @@ func (mc *MovieCore) GetOneMovieSortedBy(sortedBy []string, sortDir string) (mod
 
 	unifiedSortedByParams = unifiedSortedByParams[:len(unifiedSortedByParams)-1]
 	query := fmt.Sprintf(queries.GET_ONE_MOVIE_SORTED_BY_QUERY,unifiedSortedByParams,sortDir)
-    err := mc.db.QueryRow(query).Scan(&title, &description, &duration, &artists, &genres, &watchURL, &vote, &viewcount)
+    err := mc.db.QueryRow(query).Scan(&title, &description, &duration, &artists, &genre, &watchURL, &vote, &viewcount)
 
     if err != nil {
        return models.Movie{},err
@@ -93,10 +93,9 @@ func (mc *MovieCore) GetOneMovieSortedBy(sortedBy []string, sortDir string) (mod
 		Description: description,
 		Duration: duration,
 		Artists:artists,
-		Genres: genres,
+		Genre: genre,
 		WatchURL: watchURL,
 		Vote: vote,
 		ViewCount: viewcount,
 	},nil
-
 }
