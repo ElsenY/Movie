@@ -54,7 +54,7 @@ func (mc *MovieCore) UpdateMovieById(movie models.Movie, id string) error {
 func (mc *MovieCore) GetMovieById(id string) (models.Movie, error) {
 
 	var title, description, duration, artists, genre, watchURL string
-	var vote, viewcount int64
+	var vote, viewcount int
 
 	err := mc.db.QueryRow(queries.GET_MOVIE_BY_ID_QUERY, id).Scan(&title, &description, &duration, &artists, &genre, &watchURL, &vote, &viewcount)
 
@@ -77,7 +77,7 @@ func (mc *MovieCore) GetMovieById(id string) (models.Movie, error) {
 func (mc *MovieCore) GetOneMovieSortedBy(sortedBy []string, sortDir string) (models.Movie, error) {
 
 	var title, description, duration, artists, genre, watchURL string
-	var vote, viewcount int64
+	var vote, viewcount int
 
 	var unifiedSortedByParams string
 	for _, v := range sortedBy {
@@ -124,7 +124,7 @@ func (mc *MovieCore) GetMoviesPaginated(page, perPage int) ([]models.Movie, erro
 
 	var movies []models.Movie
 	var title, description, duration, artists, genre, watchURL string
-	var id, vote, viewcount int64
+	var id, vote, viewcount int
 
 	for rows.Next() {
 		err = rows.Scan(&id, &title, &description, &duration, &artists, &genre, &watchURL, &vote, &viewcount)
@@ -178,7 +178,7 @@ func (mc *MovieCore) GetMoviesByOptions(searchOpts map[string]string) ([]models.
 
 	var movies []models.Movie
 	var title, description, duration, artists, genre, watchURL string
-	var id, vote, viewcount int64
+	var id, vote, viewcount int
 
 	for rows.Next() {
 

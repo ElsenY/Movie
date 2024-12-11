@@ -1,13 +1,13 @@
 package models
 
 type Movie struct {
-	Id          int64
+	Id          int
 	Title       string
 	Description string
 	Duration    string
 	Artists     string
 	Genre       string
 	WatchURL    string
-	Vote        int64
-	ViewCount   int64
+	Vote        int
+	ViewCount   int
 }

@@ -15,6 +15,7 @@ type IMovieServices interface {
 	GetMostViewedGenre() (genre string, viewCount int, err error)
 	GetMoviesPaginated(page, perPage int) (movies []models.Movie, err error)
 	GetMoviesByOptions(searchOpts map[string]string) (movies []models.Movie, err error)
+	GetMovieViewCount(id string) (title string, viewCount int, err error)
 }
 
 type MovieServices struct {
@@ -103,4 +104,15 @@ func (ms *MovieServices) GetMoviesByOptions(searchOpts map[string]string) ([]mod
 	}
 
 	return movies, nil
+}
+
+func (ms *MovieServices) GetMovieViewCount(id string) (string, int, error) {
+
+	movie, err := ms.MovieCore.GetMovieById(id)
+
+	if err != nil {
+		return "", 0, err
+	}
+
+	return movie.Title, movie.ViewCount, nil
 }

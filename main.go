@@ -18,8 +18,6 @@ import (
 var db = make(map[string]string)
 
 func setupRouter(mh handler.IMovieHandler) *gin.Engine {
-	// Disable Console Color
-	// gin.DisableConsoleColor()
 	r := gin.Default()
 
 	// Ping test
@@ -29,10 +27,11 @@ func setupRouter(mh handler.IMovieHandler) *gin.Engine {
 
 	r.GET("movies", mh.GetMoviesPaginated)
 	r.GET("movieswithopts", mh.GetMoviesByOptions)
+	r.GET("movieviewcount", mh.GetMovieViewCount)
 
 	// basic auth for admin route
 	admin := r.Group("/", gin.BasicAuth(gin.Accounts{
-		os.Getenv("ADMIN_USERNAME"): os.Getenv("ADMIN_PASSWORD"), // user:foo password:bar
+		os.Getenv("ADMIN_USERNAME"): os.Getenv("ADMIN_PASSWORD"),
 	}))
 
 	admin.POST("movie", mh.CreateMovie)

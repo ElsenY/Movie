@@ -21,6 +21,7 @@ type IMovieHandler interface {
 	GetMostViewedGenre(c *gin.Context)
 	GetMoviesPaginated(c *gin.Context)
 	GetMoviesByOptions(c *gin.Context)
+	GetMovieViewCount(c *gin.Context)
 }
 
 func NewMovieHandler(ms services.IMovieServices) IMovieHandler {
@@ -185,13 +186,37 @@ func (mh *MovieHandler) GetMoviesByOptions(c *gin.Context) {
 	movies, err := mh.MovieServices.GetMoviesByOptions(searchOpts)
 
 	if err != nil {
-		if err != nil {
-			c.JSON(http.StatusBadGateway, gin.H{
-				"message": fmt.Sprintf("failed to get movie by search opts because of %s", err.Error()),
-			})
-			return
-		}
+		c.JSON(http.StatusBadGateway, gin.H{
+			"message": fmt.Sprintf("failed to get movie by search opts because of %s", err.Error()),
+		})
+		return
 	}
 
 	c.JSON(http.StatusOK, movies)
+}
+
+func (mh *MovieHandler) GetMovieViewCount(c *gin.Context) {
+
+	id := c.Query("movieid")
+
+	if id == "" {
+		c.JSON(http.StatusBadRequest, gin.H{
+			"message": "please input movie id!",
+		})
+		return
+	}
+
+	title, viewCount, err := mh.MovieServices.GetMovieViewCount(id)
+
+	if err != nil {
+		c.JSON(http.StatusBadGateway, gin.H{
+			"message": fmt.Sprintf("failed to get movie view count because of %s", err.Error()),
+		})
+		return
+	}
+
+	c.JSON(http.StatusOK, gin.H{
+		"title":     title,
+		"viewCount": viewCount,
+	})
 }
