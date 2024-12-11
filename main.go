@@ -4,43 +4,14 @@ import (
 	"database/sql"
 	"fmt"
 	"log"
-	"net/http"
 	"os"
 	"test-msbu/core"
 	"test-msbu/handler"
 	"test-msbu/services"
 
-	"github.com/gin-gonic/gin"
 	"github.com/joho/godotenv"
 	_ "github.com/lib/pq"
 )
-
-var db = make(map[string]string)
-
-func setupRouter(mh handler.IMovieHandler) *gin.Engine {
-	r := gin.Default()
-
-	// Ping test
-	r.GET("/ping", func(c *gin.Context) {
-		c.String(http.StatusOK, "pong")
-	})
-
-	r.GET("movies", mh.GetMoviesPaginated)
-	r.GET("movieswithopts", mh.GetMoviesByOptions)
-	r.GET("movieviewcount", mh.GetMovieViewCount)
-
-	// basic auth for admin route
-	admin := r.Group("/", gin.BasicAuth(gin.Accounts{
-		os.Getenv("ADMIN_USERNAME"): os.Getenv("ADMIN_PASSWORD"),
-	}))
-
-	admin.POST("movie", mh.CreateMovie)
-	admin.PUT("movie/:id", mh.UpdateMovieById)
-	admin.GET("mostviewedmovie", mh.GetMostViewedMovie)
-	admin.GET("mostviewedgenre", mh.GetMostViewedGenre)
-
-	return r
-}
 
 func initDBConn() (*sql.DB, error) {
 	connStr := fmt.Sprintf("user=%s password=%s dbname=%s sslmode=disable", os.Getenv("DB_USER"), os.Getenv("DB_PASSWORD"), os.Getenv("DB_NAME"))
