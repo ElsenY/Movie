@@ -20,6 +20,7 @@ type IMovieHandler interface {
 	GetMostViewedMovie(c *gin.Context)
 	GetMostViewedGenre(c *gin.Context)
 	GetMoviesPaginated(c *gin.Context)
+	GetMoviesByOptions(c *gin.Context)
 }
 
 func NewMovieHandler(ms services.IMovieServices) IMovieHandler {
@@ -115,8 +116,8 @@ func (h *MovieHandler) GetMostViewedGenre(c *gin.Context) {
 
 func (mh *MovieHandler) GetMoviesPaginated(c *gin.Context) {
 
-	page := c.Params.ByName("page")
-	perPage := c.Params.ByName("perPage")
+	page := c.DefaultQuery("page", "1")
+	perPage := c.DefaultQuery("perpage", "10")
 
 	pageNum, err := strconv.Atoi(page)
 
@@ -146,10 +147,51 @@ func (mh *MovieHandler) GetMoviesPaginated(c *gin.Context) {
 	movies, err := mh.MovieServices.GetMoviesPaginated(pageNum, perPageNum)
 
 	if err != nil {
-		c.JSON(http.StatusBadRequest, gin.H{
+		c.JSON(http.StatusBadGateway, gin.H{
 			"message": fmt.Sprintf("failed to get paginated page because of %s", err.Error()),
 		})
 		return
 	}
+
+	c.JSON(http.StatusOK, movies)
+}
+
+func (mh *MovieHandler) GetMoviesByOptions(c *gin.Context) {
+
+	title := c.Query("title")
+	description := c.Query("description")
+	artists := c.Query("artist")
+	genre := c.Query("genre")
+
+	searchOpts := map[string]string{}
+
+	if title != "" {
+		searchOpts["title"] = title
+	}
+
+	if description != "" {
+		searchOpts["description"] = title
+	}
+
+	if artists != "" {
+		searchOpts["artists"] = title
+	}
+
+	if genre != "" {
+		searchOpts["genre"] = title
+	}
+
+	fmt.Println(searchOpts)
+	movies, err := mh.MovieServices.GetMoviesByOptions(searchOpts)
+
+	if err != nil {
+		if err != nil {
+			c.JSON(http.StatusBadGateway, gin.H{
+				"message": fmt.Sprintf("failed to get movie by search opts because of %s", err.Error()),
+			})
+			return
+		}
+	}
+
 	c.JSON(http.StatusOK, movies)
 }

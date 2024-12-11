@@ -28,6 +28,7 @@ func setupRouter(mh handler.IMovieHandler) *gin.Engine {
 	})
 
 	r.GET("movies", mh.GetMoviesPaginated)
+	r.GET("movieswithopts", mh.GetMoviesByOptions)
 
 	// basic auth for admin route
 	admin := r.Group("/", gin.BasicAuth(gin.Accounts{
