@@ -1,4 +1,4 @@
-package main
+package routes
 
 import (
 	"net/http"
@@ -8,7 +8,7 @@ import (
 	"github.com/gin-gonic/gin"
 )
 
-func setupRouter(mh handler.IMovieHandler) *gin.Engine {
+func SetupRouter(mh handler.IMovieHandler) *gin.Engine {
 	r := gin.Default()
 
 	// Ping test

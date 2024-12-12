@@ -7,6 +7,7 @@ import (
 	"os"
 	"test-msbu/core"
 	"test-msbu/handler"
+	"test-msbu/routes"
 	"test-msbu/services"
 
 	"github.com/joho/godotenv"
@@ -43,7 +44,7 @@ func main() {
 
 	defer db.Close()
 
-	r := setupRouter(MovieHandler)
+	r := routes.SetupRouter(MovieHandler)
 	// Listen and Server in 0.0.0.0:8080
 	r.Run(":8081")
 }
