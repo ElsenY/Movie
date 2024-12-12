@@ -182,7 +182,6 @@ func (mh *MovieHandler) GetMoviesByOptions(c *gin.Context) {
 		searchOpts["genre"] = title
 	}
 
-	fmt.Println(searchOpts)
 	movies, err := mh.MovieServices.GetMoviesByOptions(searchOpts)
 
 	if err != nil {

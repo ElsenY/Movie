@@ -165,7 +165,6 @@ func (mc *MovieCore) GetMoviesByOptions(searchOpts map[string]string) ([]models.
 		}
 
 		whereCond = whereCond[:len(whereCond)-4]
-		fmt.Println(searchOpts)
 
 		query = fmt.Sprintf(queries.GET_MOVIES_BY_QUERY, whereCond)
 	}
